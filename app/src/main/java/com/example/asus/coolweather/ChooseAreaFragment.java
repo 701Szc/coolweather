@@ -3,6 +3,7 @@ package com.example.asus.coolweather;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +89,7 @@ public class ChooseAreaFragment extends Fragment {
                 if(currentLevel == LEVEL_PROVINCE){
 //                    将选中的省份放入  selectedProvince
                     selectedProvince = provinceList.get(position);
-                    queryCities();
+                    queryCities();//查询这个市所有的县
 
                 }else if(currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
@@ -99,8 +100,8 @@ public class ChooseAreaFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(currentLevel == LEVEL_COUNTY){
-                    queryCities();
+                if(currentLevel == LEVEL_COUNTY){//当前选中为县则返回到市
+                    queryCities();//查询所属的市
                 }else if(currentLevel == LEVEL_CITY ){
 //                    从此开始加载省级数据
                     queryProvinces();
@@ -174,7 +175,7 @@ public class ChooseAreaFragment extends Fragment {
         }else{
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = "http://guolin.tech/api/china/"+provinceCode+"/"+cityCode;
+            String address = "http://guolin.tech/api/china/"+ provinceCode +"/"+cityCode;
             queryFromServer(address,"county");
         }
     }
@@ -183,6 +184,7 @@ public class ChooseAreaFragment extends Fragment {
     * */
     private void queryFromServer(String address,final String type){
         showProgressDialog();
+
 //        向服务器发送请求
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
@@ -239,6 +241,7 @@ public class ChooseAreaFragment extends Fragment {
         }
         progressDialog.show();
     }
+
     /*
     * 关闭进度对话框
     * */
